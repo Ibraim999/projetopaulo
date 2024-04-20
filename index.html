@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rick And Morty-Search</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script> 
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <script src="script.js"></script>
+  </head>
+
+<style>
+    body {
+        background-color: rgb(29, 29, 29);
+    }
+    .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px; 
+  }
+  .alive-dot {
+    background-color: green;
+  }
+
+  .dead-dot {
+    background-color: red; 
+  }
+  .unknown-dot{
+    background-color: rgb(255, 238, 0);
+  }
+  .null-dot {
+    background-color: white;
+  }
+
+  .dropdown-menu {
+    max-height: 200px;
+    overflow-y: auto;
+  }
+</style>
+
+<body>
+    <div class="container"  x-data="app()">
+        <div class="row d-flex justify-content-md-center mt-5">
+
+          <!--Dropdown personagem-->
+            <h1 class="fs-1 text-center text-light">Rick And Morty Search</h1>
+          
+             <div class="btn-group d-flex justify-content-md-center align-items-center">
+              <button x-text="personagemSelect !== null ? personagemSelect.name :  'Sobre quem você quer saber?' " type="button"
+               class="fs-6 btn btn-secondary dropdown-toggle d-flex justify-content-between align-items-center text-bg-light p-3 mt-3"
+                data-bs-toggle="dropdown" aria-expanded="false" style="max-width: 753px; height: 50px;" >
+              
+            </button>
+            
+                <ul class="dropdown-menu" style="width: 750px;">
+                  
+                  <template x-for="character in characters" >
+                     <li class="dropdown-item" @click="selecionarPersonagem(character)" ><span x-text="character.name" class="p-4" ></span></li>
+                </template>
+          </ul>
+              </div> 
+
+              <!--Card do personagem-->
+              <div class="card mb-3 mt-3 bg-secondary w-50">
+                <div class="row w-auto">
+                  <div class="col-md-4" style="background-color: #3B3E44;">
+                    <img x-bind:src="personagemSelect !== null ? personagemSelect.image : urlImagem" class="img-fluid rounded-start card-img-cover w-100 h-100" alt="Imagem do personagem escolhido">
+                  </div>
+                  <div class="col-md-8" style="background-color: #3B3E44;">
+                    <div class="card-body">
+                      <h5 x-text=" personagemSelect ? personagemSelect.name : 'Nome do personagem'" class="card-title text-light"></h5>
+                      <p class="card-text text-light">
+                        <span class="status-dot" x-bind:class="{ 'alive-dot': personagemSelect?.status === 'Alive', 'dead-dot': personagemSelect?.status === 'Dead', 
+                          'unknown-dot': personagemSelect?.status === 'unknown', 'null-dot': personagemSelect === null  }"></span>
+                        <span  x-text="personagemSelect ? personagemSelect.status : 'Vivo ou morto'"></span>
+                        <span>-</span>
+                        <span  x-text="personagemSelect ? personagemSelect.species : 'Raça'"></span>
+                      </p>
+              
+                      <h5 class="card-title text-light fs-6">Last Know Location</h5>
+                      <p x-text="personagemSelect ? personagemSelect.location.name : 'Location' " class="card-text text-light"><small class="text-body-secondary tex"></small></p>
+                      <h5 class="card-title text-light fs-6">Firt seen in:</h5>
+                      <p x-text="personagemSelect ? personagemSelect.origin.name : 'Lugar visto a primeira vez'" class="card-text text-light"></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!--Dropdown epsódios-->
+
+              <div class="btn-group d-flex justify-content-md-center align-items-center">
+                <button  type="button" class=" fs-6 btn btn-secondary dropdown-toggle d-flex justify-content-between align-items-center p-3 mt-3" data-bs-toggle="dropdown" aria-expanded="false" style="max-width: 753px; height: 50px;">
+                  Ver epsódios
+                </button>
+                <ul class="dropdown-menu" style="width: 750px;">
+                  <template x-for="episodio in episodioSelecionado">
+                    <li class="dropdown-item"><span x-text="episodio"></span></li>
+                  </template>
+                
+                </ul>
+              </div>
+
+              <!--Dropdown vizinhos-->
+
+              <div class="btn-group d-flex justify-content-md-center align-items-center">
+                <button type="button" class="fs-6 btn btn-secondary dropdown-toggle d-flex justify-content-between align-items-center p-3 mt-3" data-bs-toggle="dropdown" aria-expanded="false" style="max-width: 753px; height: 50px;">
+                  Conhecer os vizinhos
+                </button>
+                <ul class="dropdown-menu" style="width: 750px;">
+                  <template x-for="vizinho in vizinhoSelecionado">
+                    <li class="dropdown-item"><span x-text="vizinho"></span></li>
+                  </template>
+                </ul>
+              </div>
+
+              
+        </div>
+    </div>
+
+</body>
+</html>
